@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"target": "es2017",
+		"outDir": "build"
+	},
+	"extends": "@tsconfig/recommended/tsconfig.json",
+	"include": [ "src/**/*" ],
+	"exclude": [ "node_modules", "**/*.spec.ts" ]
+}
