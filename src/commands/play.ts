@@ -40,7 +40,6 @@ function getOrCreateSubscription(interaction: CommandInteraction): Subscription 
 			subscription.voiceConnection.on('error', console.error);
 			setSubscription(guildId, subscription);
 		} else {
-			interaction.followUp({ content: 'No channel was found. Join one and try again, or specify one.', ephemeral: true });
 			return undefined;
 		}
 	}
@@ -49,7 +48,11 @@ function getOrCreateSubscription(interaction: CommandInteraction): Subscription 
 }
 
 async function createTrack(query: string, methods: TrackMethods): Promise<Track> {
-	return await Track.fromURL(new URL(query), methods);
+	try {
+		return await Track.fromURL(new URL(query), methods);
+	} catch {
+		return await Track.fromQuery(query, methods);
+	}
 }
 
 export default {
@@ -77,7 +80,6 @@ export default {
 
 		await interaction.deferReply();
 	
-		// TODO: query Youtube API for non-url inputs
 		const query = interaction.options.getString('query');
 		if (!query) {
 			interaction.followUp({ content: 'No query specified.', ephemeral: true });

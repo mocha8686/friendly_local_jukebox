@@ -1,5 +1,7 @@
+import 'dotenv/config';
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
 import _ from 'lodash';
+import { google } from 'googleapis';
 import ytdl from 'ytdl-core';
 
 export interface TrackData {
@@ -41,7 +43,7 @@ export class Track {
 		return createAudioResource(probe.stream, { metadata: this, inputType: probe.type });
 	}
 
-	public static async fromURL(url: URL, methods: TrackMethods) {
+	public static async fromURL(url: URL, methods: TrackMethods): Promise<Track> {
 		const info = await ytdl.getBasicInfo(url.toString());
 		return new Track({
 			url,
@@ -49,6 +51,34 @@ export class Track {
 			onStart: _.once(methods.onStart),
 			onFinish: _.once(methods.onFinish),
 			onError: _.once(methods.onError),
+		});
+	}
+
+	public static fromQuery(query: string, methods: TrackMethods): Promise<Track> {
+		const apiKey = process.env.GOOGLE_API_KEY;
+		if (!apiKey) {
+			throw 'Google API key not defined.';
+		}
+
+		const service = google.youtube({ version: 'v3', auth: apiKey });
+
+		return new Promise((resolve, reject) => {
+			service.search.list({ 
+				part: [ 'snippet' ],
+				type: [ 'video' ],
+				maxResults: 5,
+				q: query,
+			}, (err, res) => {
+				if (err) {
+					reject(err);
+				}
+
+				if (res?.data.items && res.data.items[0].id?.videoId) {
+					resolve(Track.fromURL(new URL(`https://youtu.be/${res.data.items[0].id.videoId}`), methods));
+				} else {
+					reject('No video found.');
+				}
+			});
 		});
 	}
 }
