@@ -6,7 +6,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 const player = createAudioPlayer();
 
 function getChannelId(interaction: CommandInteraction): string | null {
-	return interaction.options.getString('voiceChannel') ?? (interaction.member as GuildMember).voice.channelId;
+	return interaction.options.getString('voice_channel') ?? (interaction.member as GuildMember).voice.channelId;
 }
 
 export default {
@@ -22,7 +22,7 @@ export default {
 		)
 		.addChannelOption(channelOption =>
 			channelOption
-				.setName('voiceChannel')
+				.setName('voice_channel')
 				.setDescription('Voice channel to join.')
 				.addChannelTypes(ChannelType.GuildVoice)
 		),
