@@ -29,10 +29,15 @@ rules:
     - includeExports: true
   '@typescript-eslint/no-unused-vars':
     - error
-    - varsIgnorePattern: "^_.*"
+    - varsIgnorePattern: '^_.*'
   sort-imports:
     - warn
     - allowSeparatedGroups: true
+      memberSyntaxSortOrder:
+        - none
+        - all
+        - single
+        - multiple
   '@typescript-eslint/member-delimiter-style':
     - warn
     - multiline:
