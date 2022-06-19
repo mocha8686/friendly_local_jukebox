@@ -29,6 +29,10 @@ export class Track {
 		this.onError = onError;
 	}
 
+	get discordString() {
+		return `*${this.title}*`;
+	}
+
 	public async intoAudioResource(): Promise<AudioResource<Track>> {
 		const stream = ytdl(
 			this.url.toString(),

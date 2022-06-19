@@ -102,15 +102,15 @@ export default {
 
 		try {
 			const track: Track = await createTrack(query, {
-				onStart: () => interaction.followUp({ content: `Now playing *${track.title}*.` }),
+				onStart: () => interaction.followUp({ content: `Now playing ${track.discordString}.` }),
 				onFinish: () => { /* no-op */ },
 				onError: err => {
 					console.error(err);
-					interaction.followUp({ content: `There was an error while playing *${track.title}*.` });
+					interaction.followUp({ content: `There was an error while playing ${track.discordString}.` });
 				}
 			});
 			subscription.enqueue(track);
-			interaction.followUp({ content: `Added ${track.title} to the queue.` });
+			interaction.followUp({ content: `Added ${track.discordString} to the queue.` });
 		} catch (err) {
 			console.error(err);
 			interaction.followUp({ content: 'There was an error getting the song.', ephemeral: true });
