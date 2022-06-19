@@ -31,8 +31,16 @@ rules:
     - error
     - varsIgnorePattern: "^_.*"
   sort-imports:
-    - error
+    - warn
     - allowSeparatedGroups: true
+  '@typescript-eslint/member-delimiter-style':
+    - warn
+    - multiline:
+        delimiter: semi
+        requireLast: true
+      singleline:
+        delimiter: semi
+        requireLast: false
 overrides:
   - files:
     - 'src/**/*.spec.ts'
