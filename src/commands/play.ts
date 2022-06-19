@@ -6,7 +6,15 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 const player = createAudioPlayer();
 
 function getChannelId(interaction: CommandInteraction): string | null {
-	return interaction.options.getString('voice_channel') ?? (interaction.member as GuildMember).voice.channelId;
+	const optionId = interaction.options.getChannel('voice_channel')?.id;
+	if (optionId) {
+		return optionId;
+	} else if (interaction.member instanceof GuildMember) {
+		const memberId = interaction.member.voice.channel?.id;
+		return memberId ?? null;
+	} else {
+		return null;
+	}
 }
 
 export default {
@@ -27,6 +35,7 @@ export default {
 				.addChannelTypes(ChannelType.GuildVoice)
 		),
 	async execute(interaction: CommandInteraction) {
+		interaction.deferReply();
 		if (!interaction.guildId || !interaction.guild) return;
 
 		const channel = getChannelId(interaction);
@@ -43,7 +52,7 @@ export default {
 		});
 
 		try {
-			await entersState(connection, VoiceConnectionStatus.Ready, 30);
+			await entersState(connection, VoiceConnectionStatus.Ready, 30000);
 		} catch (err) {
 			connection.destroy();
 			console.error(err);
@@ -60,7 +69,8 @@ export default {
 		player.play(resource);
 
 		try {
-			await entersState(player, AudioPlayerStatus.Playing, 5);
+			await entersState(player, AudioPlayerStatus.Playing, 5000);
+			interaction.reply('Playing song.');
 		} catch (err) {
 			console.error(err);
 			interaction.reply('There was an error playing audio.');

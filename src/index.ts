@@ -4,7 +4,7 @@ import { getCommandCollection } from './util/getCommandCollection';
 import { joinWithMeta } from './util/joinWithMeta';
 
 const token = process.env.DISCORD_BOT_TOKEN ?? '';
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
 
 const commands = await getCommandCollection(joinWithMeta(import.meta.url, './commands'));
 
