@@ -2,10 +2,12 @@
   "name": "discord_music_bot",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "build/index.js",
   "scripts": {
     "build": "tsc",
-    "run": "pnpm build && node .",
+    "refresh:dev": "node build/refresh.js",
+    "run": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
+    "@types/node": "^18.0.0",
     "typescript": "^4.7.4"
   },
   "dependencies": {
@@ -21,6 +24,7 @@
     "bufferutil": "^4.0.6",
     "discord-api-types": "^0.34.0",
     "discord.js": "^13.8.0",
+    "dotenv": "^16.0.1",
     "erlpack": "github:discord/erlpack",
     "utf-8-validate": "^5.0.9",
     "zlib-sync": "^0.1.7"
