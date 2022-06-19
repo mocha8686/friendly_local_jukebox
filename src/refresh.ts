@@ -16,10 +16,17 @@ const rest = new REST({ version: '10' }).setToken(token);
 console.log('Starting refresh of application commands.');
 
 try {
-	await rest.put(
-		Routes.applicationGuildCommands(clientId, guildId),
-		{ body: commands },
-	);
+	if (process.env.REFRESH_TYPE === 'GLOBAL') {
+		await rest.put(
+			Routes.applicationCommands(clientId),
+			{ body: commands },
+		);
+	} else {
+		await rest.put(
+			Routes.applicationGuildCommands(clientId, guildId),
+			{ body: commands },
+		);
+	}
 	console.log('Successfully refreshed application commands.');
 } catch (err) {
 	console.error(err);
