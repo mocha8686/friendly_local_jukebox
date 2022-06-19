@@ -1,6 +1,6 @@
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
-import { getBasicInfo, default as ytdl } from 'ytdl-core';
-import { once } from 'lodash';
+import _ from 'lodash';
+import ytdl from 'ytdl-core';
 
 export interface TrackData {
 	url: URL;
@@ -9,6 +9,8 @@ export interface TrackData {
 	onFinish: () => void;
 	onError: (err: Error) => void;
 }
+
+export type TrackMethods = Pick<TrackData, 'onStart' | 'onFinish' | 'onError'>;
 
 export class Track {
 	public readonly url: URL;
@@ -39,14 +41,14 @@ export class Track {
 		return createAudioResource(probe.stream, { metadata: this, inputType: probe.type });
 	}
 
-	public static async fromURL(url: URL, methods: Pick<TrackData, 'onStart' | 'onFinish' | 'onError'>) {
-		const info = await getBasicInfo(url.toString());
+	public static async fromURL(url: URL, methods: TrackMethods) {
+		const info = await ytdl.getBasicInfo(url.toString());
 		return new Track({
 			url,
 			title: info.videoDetails.title,
-			onStart: once(methods.onStart),
-			onFinish: once(methods.onFinish),
-			onError: once(methods.onError),
+			onStart: _.once(methods.onStart),
+			onFinish: _.once(methods.onFinish),
+			onError: _.once(methods.onError),
 		});
 	}
 }

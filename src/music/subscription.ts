@@ -8,7 +8,7 @@ const MAX_REJOIN_ATTEMPTS = 5;
 const RECONNECT_TIMEOUT_BASE_TIME = 5000;
 
 export class Subscription {
-	private readonly voiceConnection: VoiceConnection;
+	public readonly voiceConnection: VoiceConnection;
 	private readonly audioPlayer = createAudioPlayer();
 	private queue: Track[] = [];
 	private queueLock = false;	
