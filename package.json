@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "eslint src",
     "build": "tsc",
-    "refresh:dev": "node build/refresh.js",
+    "refresh": "node build/refreshGlobal.js",
+    "refresh:dev": "node build/refreshGuild.js",
     "run": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
