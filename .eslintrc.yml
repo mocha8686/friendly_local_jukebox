@@ -33,11 +33,6 @@ rules:
   sort-imports:
     - warn
     - allowSeparatedGroups: true
-      memberSyntaxSortOrder:
-        - none
-        - all
-        - single
-        - multiple
   '@typescript-eslint/member-delimiter-style':
     - warn
     - multiline:
