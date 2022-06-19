@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
+
 import { getCommands } from './util/getCommands';
 import { joinWithMeta } from './util/joinWithMeta';
 

@@ -1,5 +1,6 @@
-import { readdirSync } from 'fs';
 import { join } from 'path';
+import { readdirSync } from 'fs';
+
 import { Command } from '../types';
 
 export async function getCommands(path: string): Promise<Command[]> {

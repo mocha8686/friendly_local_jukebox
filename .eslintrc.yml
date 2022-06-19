@@ -30,6 +30,9 @@ rules:
   '@typescript-eslint/no-unused-vars':
     - error
     - varsIgnorePattern: "^_.*"
+  sort-imports:
+    - error
+    - allowSeparatedGroups: true
 overrides:
   - files:
     - 'src/**/*.spec.ts'
