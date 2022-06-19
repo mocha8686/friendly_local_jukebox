@@ -1,4 +1,4 @@
-import { AudioPlayer, AudioPlayerStatus, VoiceConnection, VoiceConnectionDisconnectReason, VoiceConnectionDisconnectedState, VoiceConnectionStatus, createAudioPlayer, entersState, AudioResource } from '@discordjs/voice';
+import { AudioPlayer, AudioPlayerStatus, AudioResource, VoiceConnection, VoiceConnectionDisconnectReason, VoiceConnectionDisconnectedState, VoiceConnectionStatus, createAudioPlayer, entersState } from '@discordjs/voice';
 import { Track } from './track';
 import { setTimeout } from 'timers/promises';
 
@@ -7,7 +7,7 @@ const MAX_4014_TIMEOUT = 5000;
 const MAX_REJOIN_ATTEMPTS = 5;
 const RECONNECT_TIMEOUT_BASE_TIME = 5000;
 
-export class MusicSubscription {
+export class Subscription {
 	private readonly voiceConnection: VoiceConnection;
 	private readonly audioPlayer = createAudioPlayer();
 	private queue: Track[] = [];

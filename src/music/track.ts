@@ -1,4 +1,5 @@
-import { AudioResource } from '@discordjs/voice';
+import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
+import { getBasicInfo, default as ytdl } from 'ytdl-core';
 import { once } from 'lodash';
 
 export interface TrackData {
@@ -10,8 +11,8 @@ export interface TrackData {
 }
 
 export class Track {
-	private readonly url: URL;
-	private readonly title: string;
+	public readonly url: URL;
+	public readonly title: string;
 	public readonly onStart: () => void;
 	public readonly onFinish: () => void;
 	public readonly onError: (err: Error) => void;
@@ -24,18 +25,25 @@ export class Track {
 		this.onError = onError;
 	}
 
-	public intoAudioResource(): Promise<AudioResource<Track>> {
-		return new Promise((resolve, reject) => {
-			// TODO: implement
-			reject('Unimplemented.');
-		});
+	public async intoAudioResource(): Promise<AudioResource<Track>> {
+		const stream = ytdl(
+			this.url.toString(),
+			{
+				quality: 'highestaudio',
+				dlChunkSize: 100000,
+				filter: 'audioonly',
+			},
+		);
+
+		const probe = await demuxProbe(stream);
+		return createAudioResource(probe.stream, { metadata: this, inputType: probe.type });
 	}
 
-	public static fromURL(url: URL, methods: Pick<TrackData, 'onStart' | 'onFinish' | 'onError'>) {
-		// TODO: implement URL validation and getting info with ytdl-core
+	public static async fromURL(url: URL, methods: Pick<TrackData, 'onStart' | 'onFinish' | 'onError'>) {
+		const info = await getBasicInfo(url.toString());
 		return new Track({
-			url: new URL('https://example.com'),
-			title: 'Example',
+			url,
+			title: info.videoDetails.title,
 			onStart: once(methods.onStart),
 			onFinish: once(methods.onFinish),
 			onError: once(methods.onError),
