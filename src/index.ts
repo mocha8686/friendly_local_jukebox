@@ -1,11 +1,12 @@
 import 'dotenv/config';
 import { Client, Intents } from 'discord.js';
-import getCommandCollection from './util/getCommandCollection';
+import { getCommandCollection } from './util/getCommandCollection';
+import { joinWithMeta } from './util/joinWithMeta';
 
 const token = process.env.DISCORD_BOT_TOKEN ?? '';
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-const commands = await getCommandCollection(new URL('./commands', import.meta.url));
+const commands = await getCommandCollection(joinWithMeta(import.meta.url, './commands'));
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client?.user?.tag}.`);

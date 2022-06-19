@@ -6,10 +6,10 @@
   "main": "build/index.js",
   "scripts": {
     "lint": "eslint src",
-    "build": "tsc",
-    "refresh": "node build/refreshGlobal.js",
-    "refresh:dev": "node build/refreshGuild.js",
-    "run": "node .",
+    "build": "rm -rf build && tsc",
+    "refresh": "node --es-module-specifier-resolution=node build/refreshGlobal.js",
+    "refresh:dev": "node --es-module-specifier-resolution=node build/refreshGuild.js",
+    "run": "node --es-module-specifier-resolution=node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -21,10 +21,12 @@
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
     "eslint": "^8.18.0",
+    "ts-node": "^10.8.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {
     "@discordjs/builders": "^0.15.0",
+    "@discordjs/opus": "^0.5.0",
     "@discordjs/rest": "^0.5.0",
     "@discordjs/voice": "^0.10.0",
     "bufferutil": "^4.0.6",
@@ -32,6 +34,8 @@
     "discord.js": "^13.8.0",
     "dotenv": "^16.0.1",
     "erlpack": "github:discord/erlpack",
+    "opus^0.5.0": "link:@discordjs/opus^0.5.0",
+    "tweetnacl": "^1.0.3",
     "utf-8-validate": "^5.0.9",
     "zlib-sync": "^0.1.7"
   }
