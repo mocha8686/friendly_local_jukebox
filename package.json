@@ -9,7 +9,7 @@
     "build": "rm -rf build && tsc",
     "refresh": "node --es-module-specifier-resolution=node build/refreshGlobal.js",
     "refresh:dev": "node --es-module-specifier-resolution=node build/refreshGuild.js",
-    "run": "node --es-module-specifier-resolution=node .",
+    "start": "node --es-module-specifier-resolution=node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
