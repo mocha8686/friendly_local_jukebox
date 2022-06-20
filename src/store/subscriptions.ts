@@ -7,7 +7,7 @@ export function setSubscription(guildId: Snowflake, subscription: Subscription) 
 	subscriptions.set(guildId, subscription);
 }
 
-export function getSubscription(guildId?: Snowflake | undefined | null) {
+export function getSubscription(guildId?: Snowflake | undefined | null): Subscription | undefined {
 	if (guildId) {
 		return subscriptions.get(guildId);
 	} else {
@@ -15,7 +15,7 @@ export function getSubscription(guildId?: Snowflake | undefined | null) {
 	}
 }
 
-export function deleteSubscription(guildId: Snowflake | undefined | null) {
+export function deleteSubscription(guildId: Snowflake | undefined | null): boolean {
 	if (guildId) {
 		return subscriptions.delete(guildId);
 	} else {

@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
-import { User } from 'discord.js';
+import { MessageEmbed, User } from 'discord.js';
 import _ from 'lodash';
 import { createBaseEmbed } from '../util/createBaseEmbed';
 import { google } from 'googleapis';
@@ -42,11 +42,11 @@ export class Track implements TrackData {
 		this.suggestor = suggestor;
 	}
 
-	get discordString() {
+	get discordString(): string {
 		return `*${this.title}*`;
 	}
 
-	get embed() {
+	get embed(): MessageEmbed {
 		return createBaseEmbed()
 			.setTitle(this.title)
 			.setURL(this.url.toString())
