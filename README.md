@@ -11,4 +11,4 @@ Friendly local jukebox. [Invite to a server near you.](https://discord.com/api/o
 - [ ] Choose from top *n* when using query
 - [ ] Tests
 - [ ] Performance
-- [ ] Embeds
+- [x] Embeds
