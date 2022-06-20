@@ -1,5 +1,6 @@
 import { AudioPlayer, AudioPlayerStatus, AudioResource, VoiceConnection, VoiceConnectionDisconnectReason, VoiceConnectionDisconnectedState, VoiceConnectionStatus, createAudioPlayer, entersState } from '@discordjs/voice';
 import { Track } from './track';
+import { deleteSubscription } from '../store/subscriptions';
 import { setTimeout } from 'timers/promises';
 
 const MAX_READY_TIMEOUT = 20000;
@@ -29,6 +30,7 @@ export class Subscription {
 				await this.handleDisconnect(newState);
 			} else if (newState.status === VoiceConnectionStatus.Destroyed) {
 				this.stop();
+				deleteSubscription(this.voiceConnection.joinConfig.guildId);
 			} else if (
 				!this.readyLock &&
 				(newState.status === VoiceConnectionStatus.Connecting || newState.status === VoiceConnectionStatus.Signalling)
