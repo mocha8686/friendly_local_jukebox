@@ -75,7 +75,7 @@ export class Track implements TrackData {
 		return new Track({
 			url,
 			title: info.videoDetails.title,
-			thumbnailUrl: new URL(info.thumbnail_url),
+			thumbnailUrl: new URL(info.videoDetails.thumbnails[0].url),
 			onStart: _.once(methods.onStart),
 			onFinish: _.once(methods.onFinish),
 			onError: _.once(methods.onError),
