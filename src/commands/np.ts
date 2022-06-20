@@ -26,6 +26,6 @@ export default {
 		}
 
 		const track = (subscription.audioPlayer.state.resource as AudioResource<Track>).metadata;
-		interaction.reply({ embeds: [ track.nowPlayingEmbed ] });
+		interaction.reply({ content: `Currently playing ${track.discordString}`, embeds: [ track.embed ] });
 	}
 };

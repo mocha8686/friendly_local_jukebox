@@ -43,7 +43,7 @@ export class Track implements TrackData {
 		return `*${this.title}*`;
 	}
 
-	get nowPlayingEmbed() {
+	get embed() {
 		return createBaseEmbed()
 			.setTitle(this.title)
 			.setURL(this.url.toString())
