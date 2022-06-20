@@ -5,8 +5,10 @@ Friendly local jukebox. [Invite to a server near you.](https://discord.com/api/o
 - [ ] Commands
 	- [ ] queue
 	- [x] skip
-	- [ ] np (now playing)
+	- [x] np (now playing)
 	- [x] stop
 - [ ] Store channel in subscription to send song notifications to one place
 - [ ] Choose from top *n* when using query
 - [ ] Tests
+- [ ] Performance
+- [ ] Embeds
