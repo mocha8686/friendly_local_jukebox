@@ -6,7 +6,7 @@ Friendly local jukebox. [Invite to a server near you.](https://discord.com/api/o
 	- [ ] queue
 	- [ ] skip
 	- [ ] np (now playing)
-	- [ ] stop
+	- [x] stop
 - [ ] Store channel in subscription to send song notifications to one place
 - [ ] Choose from top *n* when using query
 - [ ] Tests
