@@ -9,6 +9,7 @@ import ytdl from 'ytdl-core';
 export interface TrackData {
 	url: URL;
 	title: string;
+	thumbnailUrl: URL;
 	onStart: () => void;
 	onFinish: () => void;
 	onError: (err: Error) => void;
@@ -25,14 +26,16 @@ export type TrackMethods = Pick<TrackData, 'onStart' | 'onFinish' | 'onError'>;
 export class Track implements TrackData {
 	public readonly url: URL;
 	public readonly title: string;
+	public readonly thumbnailUrl: URL;
 	public readonly onStart: () => void;
 	public readonly onFinish: () => void;
 	public readonly onError: (err: Error) => void;
 	public readonly suggestor: SuggestorData;
 
-	private constructor({ url, title, onStart, onFinish, onError, suggestor }: TrackData) {
+	private constructor({ url, title, thumbnailUrl, onStart, onFinish, onError, suggestor }: TrackData) {
 		this.url = url;
 		this.title = title;
+		this.thumbnailUrl = thumbnailUrl;
 		this.onStart = onStart;
 		this.onFinish = onFinish;
 		this.onError = onError;
@@ -47,7 +50,7 @@ export class Track implements TrackData {
 		return createBaseEmbed()
 			.setTitle(this.title)
 			.setURL(this.url.toString())
-			//.setThumbnail()
+			.setThumbnail(this.thumbnailUrl.toString())
 			.setFooter({ text: `Added by *${this.suggestor.username}*`, iconURL: this.suggestor.avatarURL?.toString() });
 	}
 
@@ -72,6 +75,7 @@ export class Track implements TrackData {
 		return new Track({
 			url,
 			title: info.videoDetails.title,
+			thumbnailUrl: new URL(info.thumbnail_url),
 			onStart: _.once(methods.onStart),
 			onFinish: _.once(methods.onFinish),
 			onError: _.once(methods.onError),
