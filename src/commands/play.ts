@@ -104,7 +104,7 @@ export default {
 			const track: Track = await createTrack(
 				query,
 				{
-					onStart: () => interaction.followUp({ content: `Now playing ${track.discordString}.` }),
+					onStart: () => interaction.followUp({ embeds: [ track.nowPlayingEmbed ] }),
 					onFinish: () => { /* no-op */ },
 					onError: err => {
 						console.error(err);

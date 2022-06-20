@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
 import { User } from 'discord.js';
 import _ from 'lodash';
+import { createBaseEmbed } from '../util/createBaseEmbed';
 import { google } from 'googleapis';
 import ytdl from 'ytdl-core';
 
@@ -40,6 +41,14 @@ export class Track implements TrackData {
 
 	get discordString() {
 		return `*${this.title}*`;
+	}
+
+	get nowPlayingEmbed() {
+		return createBaseEmbed()
+			.setTitle(this.title)
+			.setURL(this.url.toString())
+			//.setThumbnail()
+			.setFooter({ text: `Added by *${this.suggestor.username}*`, iconURL: this.suggestor.avatarURL?.toString() });
 	}
 
 	public async intoAudioResource(): Promise<AudioResource<Track>> {
