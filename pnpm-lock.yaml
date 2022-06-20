@@ -18,7 +18,6 @@ specifiers:
   eslint: ^8.18.0
   googleapis: ^103.0.0
   lodash: ^4.17.21
-  opus^0.5.0: link:@discordjs/opus^0.5.0
   ts-node: ^10.8.1
   tweetnacl: ^1.0.3
   typescript: ^4.7.4
@@ -38,7 +37,6 @@ dependencies:
   erlpack: github.com/discord/erlpack/3b793a333dd3f6a140b9168ea91e9fa9660753ce
   googleapis: 103.0.0
   lodash: 4.17.21
-  opus^0.5.0: link:@discordjs/opus^0.5.0
   tweetnacl: 1.0.3
   utf-8-validate: 5.0.9
   ytdl-core: 4.11.0

@@ -1,5 +1,5 @@
 {
-  "name": "discord_music_bot",
+  "name": "friendly_local_jukebox",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -37,7 +37,6 @@
     "erlpack": "github:discord/erlpack",
     "googleapis": "^103.0.0",
     "lodash": "^4.17.21",
-    "opus^0.5.0": "link:@discordjs/opus^0.5.0",
     "tweetnacl": "^1.0.3",
     "utf-8-validate": "^5.0.9",
     "ytdl-core": "^4.11.0",
