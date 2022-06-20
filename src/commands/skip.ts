@@ -25,8 +25,8 @@ export default {
 			return;
 		}
 
-		const song = (subscription.audioPlayer.state.resource as AudioResource<Track>).metadata.discordString;
+		const track = (subscription.audioPlayer.state.resource as AudioResource<Track>).metadata;
 		subscription.audioPlayer.stop();
-		interaction.reply({ content: `Skipped ${song}.` });
+		interaction.reply({ content: `Skipped ${track.discordString}.` });
 	}
 };
