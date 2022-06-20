@@ -79,26 +79,26 @@ export default {
 			interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
 			return;
 		}
-
-		await interaction.deferReply();
 	
 		const query = interaction.options.getString('query');
 		if (!query) {
-			interaction.followUp({ content: 'No query specified.', ephemeral: true });
+			interaction.reply({ content: 'No query specified.', ephemeral: true });
 			return;
 		}
 		
 		const subscription = getOrCreateSubscription(interaction);
 		if (!subscription) {
-			interaction.followUp({ content: 'No voice channel was found. Either join one and try again, or specify a channel.', ephemeral: true });
+			interaction.reply({ content: 'No voice channel was found. Either join one and try again, or specify a channel.', ephemeral: true });
 			return;
 		}
+
+		await interaction.deferReply();
 
 		try {
 			await entersState(subscription.voiceConnection, VoiceConnectionStatus.Ready, MAX_READY_TIMEOUT);
 		} catch (err) {
 			console.error(err);
-			interaction.followUp({ content: 'There was an error connecting to the voice channel. Try again later.', ephemeral: true });
+			interaction.followUp({ content: 'There was an error connecting to the voice channel. Try again later.' });
 			return;
 		}
 
@@ -119,7 +119,7 @@ export default {
 			interaction.followUp({ content: `Added ${track.discordString} to the queue.`, embeds: [ track.embed ] });
 		} catch (err) {
 			console.error(err);
-			interaction.followUp({ content: 'There was an error getting the song.', ephemeral: true });
+			interaction.followUp({ content: 'There was an error getting the song.' });
 			return;
 		}
 	}
