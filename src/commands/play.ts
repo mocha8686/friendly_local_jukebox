@@ -88,7 +88,7 @@ export default {
 		
 		const subscription = getOrCreateSubscription(interaction);
 		if (!subscription) {
-			interaction.followUp({ content: 'No voice channel was found. Either join one and try again, or specify a channel.' });
+			interaction.followUp({ content: 'No voice channel was found. Either join one and try again, or specify a channel.', ephemeral: true });
 			return;
 		}
 
