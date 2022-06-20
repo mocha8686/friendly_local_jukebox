@@ -10,7 +10,7 @@ const RECONNECT_TIMEOUT_BASE_TIME = 5000;
 
 export class Subscription {
 	public readonly voiceConnection: VoiceConnection;
-	private readonly audioPlayer = createAudioPlayer();
+	public readonly audioPlayer = createAudioPlayer();
 	private queue: Track[] = [];
 	private queueLock = false;	
 	private readyLock = false;

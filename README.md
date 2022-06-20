@@ -4,7 +4,7 @@ Friendly local jukebox. [Invite to a server near you.](https://discord.com/api/o
 ## TODO
 - [ ] Commands
 	- [ ] queue
-	- [ ] skip
+	- [x] skip
 	- [ ] np (now playing)
 	- [x] stop
 - [ ] Store channel in subscription to send song notifications to one place
