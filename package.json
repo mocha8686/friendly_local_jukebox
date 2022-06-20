@@ -7,8 +7,8 @@
   "scripts": {
     "lint": "eslint src",
     "build": "rm -rf build && tsc",
-    "refresh": "REFRESH_TYPE=GLOBAL node --es-module-specifier-resolution=node build/refreshGlobal.js",
-    "refresh:dev": "node --es-module-specifier-resolution=node build/refreshGuild.js",
+    "refresh": "REFRESH_TYPE=GLOBAL node --es-module-specifier-resolution=node build/refresh.js",
+    "refresh:dev": "node --es-module-specifier-resolution=node build/refresh.js",
     "start": "node --es-module-specifier-resolution=node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
