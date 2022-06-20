@@ -51,7 +51,7 @@ export class Track implements TrackData {
 			.setTitle(this.title)
 			.setURL(this.url.toString())
 			.setThumbnail(this.thumbnailUrl.toString())
-			.setFooter({ text: `Added by *${this.suggestor.username}*`, iconURL: this.suggestor.avatarURL?.toString() });
+			.setFooter({ text: `Added by ${this.suggestor.username}`, iconURL: this.suggestor.avatarURL?.toString() });
 	}
 
 	public async intoAudioResource(): Promise<AudioResource<Track>> {
