@@ -114,7 +114,7 @@ export default {
 				interaction.user,
 			);
 			subscription.enqueue(track);
-			interaction.followUp({ content: `Added ${track.discordString} to the queue.` });
+			interaction.followUp({ content: `Added ${track.discordString} to the queue.`, embeds: [ track.embed ] });
 		} catch (err) {
 			console.error(err);
 			interaction.followUp({ content: 'There was an error getting the song.', ephemeral: true });
