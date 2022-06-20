@@ -5,6 +5,7 @@ import { getSubscription, setSubscription } from '../store/subscriptions';
 import { ChannelType } from 'discord-api-types/v10';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Subscription } from '../music/subscription';
+import ytdl from 'ytdl-core';
 
 const MAX_READY_TIMEOUT = 20000;
 
@@ -49,6 +50,7 @@ function getOrCreateSubscription(interaction: CommandInteraction): Subscription 
 
 async function createTrack(query: string, methods: TrackMethods, user: User): Promise<Track> {
 	try {
+		ytdl.getURLVideoID(query);
 		return await Track.fromURL(new URL(query), methods, user);
 	} catch {
 		return await Track.fromQuery(query, methods, user);
