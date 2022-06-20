@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember } from 'discord.js';
+import { CommandInteraction, GuildMember, User } from 'discord.js';
 import { Track, TrackMethods } from '../music/track';
 import { VoiceConnectionStatus, entersState, joinVoiceChannel } from '@discordjs/voice';
 import { getSubscription, setSubscription } from '../store/subscriptions';
@@ -47,11 +47,11 @@ function getOrCreateSubscription(interaction: CommandInteraction): Subscription 
 	return subscription;
 }
 
-async function createTrack(query: string, methods: TrackMethods): Promise<Track> {
+async function createTrack(query: string, methods: TrackMethods, user: User): Promise<Track> {
 	try {
-		return await Track.fromURL(new URL(query), methods);
+		return await Track.fromURL(new URL(query), methods, user);
 	} catch {
-		return await Track.fromQuery(query, methods);
+		return await Track.fromQuery(query, methods, user);
 	}
 }
 
@@ -101,14 +101,18 @@ export default {
 		}
 
 		try {
-			const track: Track = await createTrack(query, {
-				onStart: () => interaction.followUp({ content: `Now playing ${track.discordString}.` }),
-				onFinish: () => { /* no-op */ },
-				onError: err => {
-					console.error(err);
-					interaction.followUp({ content: `There was an error while playing ${track.discordString}.` });
-				}
-			});
+			const track: Track = await createTrack(
+				query,
+				{
+					onStart: () => interaction.followUp({ content: `Now playing ${track.discordString}.` }),
+					onFinish: () => { /* no-op */ },
+					onError: err => {
+						console.error(err);
+						interaction.followUp({ content: `There was an error while playing ${track.discordString}.` });
+					},
+				},
+				interaction.user,
+			);
 			subscription.enqueue(track);
 			interaction.followUp({ content: `Added ${track.discordString} to the queue.` });
 		} catch (err) {
