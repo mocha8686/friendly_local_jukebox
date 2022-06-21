@@ -1,10 +1,10 @@
 import { CommandInteraction, GuildMember, User } from 'discord.js';
 import { Track, TrackMethods } from '../music/track';
 import { VoiceConnectionStatus, entersState, joinVoiceChannel } from '@discordjs/voice';
-import { getSubscription, setSubscription } from '../store/subscriptions';
+import { getSession, setSession } from '../store/sessions';
 import { ChannelType } from 'discord-api-types/v10';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { Subscription } from '../music/subscription';
+import { Session } from '../music/session';
 import ytdl from 'ytdl-core';
 
 const MAX_READY_TIMEOUT = 20000;
@@ -21,31 +21,31 @@ function getChannelIdFromInteraction(interaction: CommandInteraction): string | 
 	}
 }
 
-function getOrCreateSubscription(interaction: CommandInteraction): Subscription | undefined {
+function getOrCreatesession(interaction: CommandInteraction): Session | undefined {
 	if (!interaction.guildId || !interaction.guild) return undefined;
 
-	let subscription = getSubscription(interaction.guildId);
+	let session = getSession(interaction.guildId);
 
-	if (!subscription) {
+	if (!session) {
 		const channelId = getChannelIdFromInteraction(interaction);
 		if (channelId) {
 			const guildId = interaction.guildId;
 
-			subscription = new Subscription(
+			session = new Session(
 				joinVoiceChannel({
 					channelId,
 					guildId,
 					adapterCreator: interaction.guild.voiceAdapterCreator,
 				}),
 			);
-			subscription.voiceConnection.on('error', console.error);
-			setSubscription(guildId, subscription);
+			session.voiceConnection.on('error', console.error);
+			setSession(guildId, session);
 		} else {
 			return undefined;
 		}
 	}
 
-	return subscription;
+	return session;
 }
 
 async function createTrack(query: string, methods: TrackMethods, user: User): Promise<Track> {
@@ -86,8 +86,8 @@ export default {
 			return;
 		}
 		
-		const subscription = getOrCreateSubscription(interaction);
-		if (!subscription) {
+		const session = getOrCreatesession(interaction);
+		if (!session) {
 			interaction.reply({ content: 'No voice channel was found. Either join one and try again, or specify a channel.', ephemeral: true });
 			return;
 		}
@@ -95,7 +95,7 @@ export default {
 		await interaction.deferReply();
 
 		try {
-			await entersState(subscription.voiceConnection, VoiceConnectionStatus.Ready, MAX_READY_TIMEOUT);
+			await entersState(session.voiceConnection, VoiceConnectionStatus.Ready, MAX_READY_TIMEOUT);
 		} catch (err) {
 			console.error(err);
 			interaction.followUp({ content: 'There was an error connecting to the voice channel. Try again later.' });
@@ -115,7 +115,7 @@ export default {
 				},
 				interaction.user,
 			);
-			subscription.enqueue(track);
+			session.enqueue(track);
 			interaction.followUp({ content: `Added ${track.discordString} to the queue.`, embeds: [ track.embed ] });
 		} catch (err) {
 			console.error(err);

@@ -1,7 +1,7 @@
 import { AudioPlayer, AudioPlayerStatus, AudioResource, VoiceConnection, VoiceConnectionDisconnectReason, VoiceConnectionDisconnectedState, VoiceConnectionStatus, createAudioPlayer, entersState } from '@discordjs/voice';
 import { Track } from './track';
 import { createBaseEmbed } from '../util/createBaseEmbed';
-import { deleteSubscription } from '../store/subscriptions';
+import { deleteSession } from '../store/sessions';
 import { setTimeout } from 'timers/promises';
 
 const MAX_READY_TIMEOUT = 20000;
@@ -9,7 +9,7 @@ const MAX_4014_TIMEOUT = 5000;
 const MAX_REJOIN_ATTEMPTS = 5;
 const RECONNECT_TIMEOUT_BASE_TIME = 5000;
 
-export class Subscription {
+export class Session {
 	public readonly voiceConnection: VoiceConnection;
 	public readonly audioPlayer = createAudioPlayer();
 	private queue: Track[] = [];
@@ -64,7 +64,7 @@ export class Subscription {
 				await this.handleDisconnect(newState);
 			} else if (newState.status === VoiceConnectionStatus.Destroyed) {
 				this.stop();
-				deleteSubscription(this.voiceConnection.joinConfig.guildId);
+				deleteSession(this.voiceConnection.joinConfig.guildId);
 			} else if (
 				!this.readyLock &&
 				(newState.status === VoiceConnectionStatus.Connecting || newState.status === VoiceConnectionStatus.Signalling)

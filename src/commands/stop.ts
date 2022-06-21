@@ -1,6 +1,6 @@
 import { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { getSubscription } from '../store/subscriptions';
+import { getSession } from '../store/sessions';
 
 export default {
 	command: new SlashCommandBuilder()
@@ -12,13 +12,13 @@ export default {
 			return;
 		}
 
-		const subscription = getSubscription(interaction.guildId);
-		if (!subscription) {
+		const session = getSession(interaction.guildId);
+		if (!session) {
 			interaction.reply({ content: 'I\'m not currently in a voice channel.', ephemeral: true });
 			return;
 		}
 
-		subscription.voiceConnection.destroy();
+		session.voiceConnection.destroy();
 		interaction.reply({ content: 'Left voice channel.' });
 	}
 };

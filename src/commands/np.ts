@@ -2,7 +2,7 @@ import { AudioPlayerStatus, AudioResource } from '@discordjs/voice';
 import { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Track } from '../music/track';
-import { getSubscription } from '../store/subscriptions';
+import { getSession } from '../store/sessions';
 
 export default {
 	command: new SlashCommandBuilder()
@@ -14,18 +14,18 @@ export default {
 			return;
 		}
 
-		const subscription = getSubscription(interaction.guildId);
-		if (!subscription) {
+		const session = getSession(interaction.guildId);
+		if (!session) {
 			interaction.reply({ content: 'I\'m not currently in a voice channel.', ephemeral: true });
 			return;
 		}
 
-		if (subscription.audioPlayer.state.status === AudioPlayerStatus.Idle) {
+		if (session.audioPlayer.state.status === AudioPlayerStatus.Idle) {
 			interaction.reply({ content: 'I\'m not currently playing a song.', ephemeral: true });
 			return;
 		}
 
-		const track = (subscription.audioPlayer.state.resource as AudioResource<Track>).metadata;
+		const track = (session.audioPlayer.state.resource as AudioResource<Track>).metadata;
 		interaction.reply({ content: `Currently playing ${track.discordString}.`, embeds: [ track.embed ] });
 	}
 };
