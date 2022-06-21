@@ -1,4 +1,5 @@
 import { AudioPlayer, AudioPlayerStatus, AudioResource, VoiceConnection, VoiceConnectionDisconnectReason, VoiceConnectionDisconnectedState, VoiceConnectionStatus, createAudioPlayer, entersState } from '@discordjs/voice';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { Track } from './track';
 import { createBaseEmbed } from '../util/createBaseEmbed';
 import { deleteSession } from '../store/sessions';
@@ -8,7 +9,30 @@ const MAX_READY_TIMEOUT = 20000;
 const MAX_4014_TIMEOUT = 5000;
 const MAX_REJOIN_ATTEMPTS = 5;
 const RECONNECT_TIMEOUT_BASE_TIME = 5000;
+const PAGE_SIZE = 10;
 
+function createBaseQueueActionRow(): MessageActionRow {
+	// U+25C0 ◀
+	// U+25B6 ▶
+	return new MessageActionRow().addComponents(
+		new MessageButton()
+			.setCustomId('first')
+			.setLabel('◀◀')
+			.setStyle('PRIMARY'),
+		new MessageButton()
+			.setCustomId('previous')
+			.setLabel('◀')
+			.setStyle('PRIMARY'),
+		new MessageButton()
+			.setCustomId('next')
+			.setLabel('▶')
+			.setStyle('PRIMARY'),
+		new MessageButton()
+			.setCustomId('last')
+			.setLabel('▶▶')
+			.setStyle('PRIMARY'),
+	);
+}
 export class Session {
 	public readonly voiceConnection: VoiceConnection;
 	public readonly audioPlayer = createAudioPlayer();
@@ -36,6 +60,65 @@ export class Session {
 	public enqueue(track: Track) {
 		this.queue.push(track);
 		this.processQueue();
+	}
+
+	public getQueueElements(page: number, disabled = false): [MessageEmbed, MessageActionRow, number] {
+		const [embed, newPage] = this.createQueueEmbed(page);
+		const actionRow = this.createActionRow(disabled ? 'disabled' : newPage);
+		return [embed, actionRow, newPage];
+	}
+
+	private createQueueEmbed(page: number): [MessageEmbed, number] {
+		const totalPages = Math.ceil(this.queue.length / PAGE_SIZE);
+		if (page < 0) page = 0;
+		if (page > totalPages - 1) page = totalPages - 1; // If page would have no entries, fall back to last page
+
+		const entries = Object.entries(this.queue).slice(page * PAGE_SIZE, page * PAGE_SIZE + 10);
+		const embed = createBaseEmbed()
+			.setTitle('Queue');
+
+		const nowPlaying = this.nowPlaying;
+		if (nowPlaying) {
+			embed.addField('*Now Playing*', nowPlaying.queueString);
+		}
+		
+		if (entries.length > 0) {
+			embed.addField(
+				`*Page ${page + 1}*`,
+				entries.reduce((str, [i, track]) => {
+					str += `\`${parseInt(i) + 1}\` ${track.queueString}\n`;
+					return str;
+				}, ''),
+			).setFooter({
+				text: `${page + 1}/${totalPages}`,
+			});
+		}
+
+		return [embed, page];
+	}
+
+	private createActionRow(page: number | 'disabled'): MessageActionRow {
+		const actionRow = createBaseQueueActionRow();
+		if (page === 'disabled') {
+			actionRow.components.forEach(component => component.setDisabled(true));
+			return actionRow;
+		} else {
+			const totalPages = Math.ceil(this.queue.length / PAGE_SIZE);
+
+			if (page <= 0)	{
+				actionRow.components
+					.filter(component => component.customId === 'first' || component.customId === 'previous')
+					.forEach(component => component.setDisabled(true));
+			}
+
+			if (page >= totalPages - 1)	{
+				actionRow.components
+					.filter(component => component.customId === 'next' || component.customId === 'last')
+					.forEach(component => component.setDisabled(true));
+			}
+
+			return actionRow;
+		}
 	}
 
 	private stop() {

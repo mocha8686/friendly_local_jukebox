@@ -10,6 +10,7 @@ export interface TrackData {
 	url: URL;
 	title: string;
 	thumbnailUrl: URL;
+	lengthSeconds: number;
 	onStart: () => void;
 	onFinish: () => void;
 	onError: (err: Error) => void;
@@ -27,15 +28,17 @@ export class Track implements TrackData {
 	public readonly url: URL;
 	public readonly title: string;
 	public readonly thumbnailUrl: URL;
+	public readonly lengthSeconds: number;
 	public readonly onStart: () => void;
 	public readonly onFinish: () => void;
 	public readonly onError: (err: Error) => void;
 	public readonly suggestor: SuggestorData;
 
-	private constructor({ url, title, thumbnailUrl, onStart, onFinish, onError, suggestor }: TrackData) {
+	private constructor({ url, title, thumbnailUrl, lengthSeconds, onStart, onFinish, onError, suggestor }: TrackData) {
 		this.url = url;
 		this.title = title;
 		this.thumbnailUrl = thumbnailUrl;
+		this.lengthSeconds = lengthSeconds;
 		this.onStart = onStart;
 		this.onFinish = onFinish;
 		this.onError = onError;
@@ -44,6 +47,20 @@ export class Track implements TrackData {
 
 	get discordString(): string {
 		return `*${this.title}*`;
+	}
+
+	get queueString(): string {
+		return `[${this.title}](${this.url}) \`${this.formattedTime}\``;
+	}
+
+	get formattedTime(): string {
+		const hours = Math.floor((this.lengthSeconds / 60) / 24);
+		const minutes = Math.floor(this.lengthSeconds / 60) % 60;
+		const seconds = (this.lengthSeconds % 60).toString().padStart(2, '0');
+		
+		return (hours > 0) ?
+			`${hours}:${minutes.toString().padStart(2, '0')}:${seconds}` :
+			`${minutes}:${seconds}`;
 	}
 
 	get embed(): MessageEmbed {
@@ -76,6 +93,7 @@ export class Track implements TrackData {
 			url,
 			title: info.videoDetails.title,
 			thumbnailUrl: new URL(info.videoDetails.thumbnails[0].url),
+			lengthSeconds: parseInt(info.videoDetails.lengthSeconds),
 			onStart: _.once(methods.onStart),
 			onFinish: _.once(methods.onFinish),
 			onError: _.once(methods.onError),
