@@ -1,5 +1,6 @@
 import { AudioPlayer, AudioPlayerStatus, AudioResource, VoiceConnection, VoiceConnectionDisconnectReason, VoiceConnectionDisconnectedState, VoiceConnectionStatus, createAudioPlayer, entersState } from '@discordjs/voice';
 import { Queue } from './queue';
+import { TextChannel } from 'discord.js';
 import { Track } from './track';
 import { deleteSession } from '../store/sessions';
 import { setTimeout } from 'timers/promises';
@@ -13,9 +14,10 @@ export class Session {
 	public readonly voiceConnection: VoiceConnection;
 	public readonly audioPlayer = createAudioPlayer();
 	public readonly queue: Queue;
+	public readonly channel: TextChannel;
 	private readyLock = false;
 
-	constructor(voiceConnection: VoiceConnection) {
+	constructor(voiceConnection: VoiceConnection, channel: TextChannel) {
 		this.voiceConnection = voiceConnection;
 
 		this.setupVoiceConnection(voiceConnection);
@@ -24,6 +26,7 @@ export class Session {
 		voiceConnection.subscribe(this.audioPlayer);
 
 		this.queue = new Queue(this);
+		this.channel = channel;
 	}
 
 	get nowPlaying(): Track | undefined {

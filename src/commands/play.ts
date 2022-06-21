@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember, User } from 'discord.js';
+import { CommandInteraction, GuildMember, TextChannel, User } from 'discord.js';
 import { Track, TrackMethods } from '../music/track';
 import { VoiceConnectionStatus, entersState, joinVoiceChannel } from '@discordjs/voice';
 import { getSession, setSession } from '../store/sessions';
@@ -9,7 +9,7 @@ import ytdl from 'ytdl-core';
 
 const MAX_READY_TIMEOUT = 20000;
 
-function getChannelIdFromInteraction(interaction: CommandInteraction): string | undefined {
+function getVoiceChannelIdFromInteraction(interaction: CommandInteraction): string | undefined {
 	const optionId = interaction.options.getChannel('voice_channel')?.id;
 	if (optionId) {
 		return optionId;
@@ -21,22 +21,23 @@ function getChannelIdFromInteraction(interaction: CommandInteraction): string | 
 	}
 }
 
-function getOrCreatesession(interaction: CommandInteraction): Session | undefined {
+async function getOrCreateSession(interaction: CommandInteraction): Promise<Session | undefined> {
 	if (!interaction.guildId || !interaction.guild) return undefined;
 
 	let session = getSession(interaction.guildId);
 
 	if (!session) {
-		const channelId = getChannelIdFromInteraction(interaction);
-		if (channelId) {
+		const voiceChannelId = getVoiceChannelIdFromInteraction(interaction);
+		if (voiceChannelId && interaction.channel) {
 			const guildId = interaction.guildId;
 
 			session = new Session(
 				joinVoiceChannel({
-					channelId,
+					channelId: voiceChannelId,
 					guildId,
 					adapterCreator: interaction.guild.voiceAdapterCreator,
 				}),
+				interaction.channel as TextChannel,
 			);
 			session.voiceConnection.on('error', console.error);
 			setSession(guildId, session);
@@ -86,7 +87,7 @@ export default {
 			return;
 		}
 		
-		const session = getOrCreatesession(interaction);
+		const session = await getOrCreateSession(interaction);
 		if (!session) {
 			interaction.reply({ content: 'No voice channel was found. Either join one and try again, or specify a channel.', ephemeral: true });
 			return;
@@ -106,11 +107,11 @@ export default {
 			const track: Track = await createTrack(
 				query,
 				{
-					onStart: () => interaction.followUp({ content: `Now playing ${track.discordString}.`, embeds: [ track.embed ] }),
+					onStart: () => session.channel.send({ content: `Now playing ${track.discordString}.`, embeds: [ track.embed ] }),
 					onFinish: () => { /* no-op */ },
 					onError: err => {
 						console.error(err);
-						interaction.followUp({ content: `There was an error while playing ${track.discordString}.` });
+						session.channel.send({ content: `There was an error while playing ${track.discordString}.` });
 					},
 				},
 				interaction.user,
