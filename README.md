@@ -3,12 +3,13 @@ Friendly local jukebox. [Invite to a server near you.](https://discord.com/api/o
 
 ## TODO
 - [ ] Commands
-	- [ ] queue
-	- [x] skip
+	- [x] queue
+	- [ ] skip
+		- [ ] to
 	- [x] np (now playing)
 	- [x] stop
+	- [ ] remove
 - [ ] Store channel in subscription to send song notifications to one place
-- [ ] Choose from top *n* when using query
-- [ ] Tests
-- [ ] Performance
+- [x] Choose from top *n* when using query
+	- [x] Query pages
 - [x] Embeds
