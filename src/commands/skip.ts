@@ -37,12 +37,12 @@ export default {
 		const to = interaction.options.getInteger('to');
 		const number = interaction.options.getInteger('number');
 		if (to) {
-			const track = session.getTrackAtIndex(to - 1);
+			const track = session.queue.getTrackAtIndex(to - 1);
 			if (!track) {
 				interaction.reply({ content: `Song #${to} doesn't exist.`, ephemeral: true });
 				return;
 			}
-			session.remove(0, to - 1);
+			session.queue.remove(0, to - 1);
 			session.audioPlayer.stop();
 			interaction.reply({ content: `Skipped to ${track.discordString}.` });
 		} else if (number && number > 1) {
@@ -50,7 +50,7 @@ export default {
 				interaction.reply({ content: 'Invalid number.', ephemeral: true });
 				return;
 			}
-			session.remove(0, number - 1);
+			session.queue.remove(0, number - 1);
 			session.audioPlayer.stop();
 			interaction.reply({ content: `Skipped ${number} songs.` });
 		} else {

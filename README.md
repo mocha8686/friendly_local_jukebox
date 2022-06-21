@@ -13,5 +13,5 @@ Friendly local jukebox. [Invite to a server near you.](https://discord.com/api/o
 - [x] Choose from top *n* when using query
 	- [x] Query pages
 - [x] Embeds
-- [ ] Queue class
-- [ ] Don't create queue embed if queue is empty and nothing is playing
+- [x] Queue class
+- [x] Don't create queue embed if queue is empty and nothing is playing

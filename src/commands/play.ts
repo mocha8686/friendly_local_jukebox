@@ -3,8 +3,8 @@ import { Track, TrackMethods } from '../music/track';
 import { VoiceConnectionStatus, entersState, joinVoiceChannel } from '@discordjs/voice';
 import { getSession, setSession } from '../store/sessions';
 import { ChannelType } from 'discord-api-types/v10';
-import { SlashCommandBuilder } from '@discordjs/builders';
 import { Session } from '../music/session';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import ytdl from 'ytdl-core';
 
 const MAX_READY_TIMEOUT = 20000;
@@ -115,7 +115,7 @@ export default {
 				},
 				interaction.user,
 			);
-			session.enqueue(track);
+			session.queue.enqueue(track);
 			interaction.followUp({ content: `Added ${track.discordString} to the queue.`, embeds: [ track.embed ] });
 		} catch (err) {
 			console.error(err);

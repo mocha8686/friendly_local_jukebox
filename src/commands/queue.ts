@@ -28,9 +28,9 @@ export default {
 		}
 
 		const page = interaction.options.getInteger('page') ?? 1;
-		const [queueEmbed, queueActionRow, newPage] = session.getQueueElements(page - 1);
+		const [queueEmbed, queueActionRow, newPage] = session.queue.getElements(page - 1);
 
-		if (!queueEmbed) {
+		if (!queueEmbed || !queueActionRow) {
 			interaction.reply({ content: 'I\'m not currently playing any songs.', ephemeral: true });
 		} else {
 			const msg = (await interaction.reply({ embeds: [ queueEmbed ], components: [ queueActionRow ], fetchReply: true })) as Message;
@@ -52,28 +52,32 @@ export default {
 				let elements;
 				switch (i.customId) {
 					case 'first':
-						elements = session.getQueueElements(0);
+						elements = session.queue.getElements(0);
 						break;
 					case 'previous':
-						elements = session.getQueueElements(page - 1);
+						elements = session.queue.getElements(page - 1);
 						break;
 					case 'next':
-						elements = session.getQueueElements(page + 1);
+						elements = session.queue.getElements(page + 1);
 						break;
 					case 'last':
-						elements = session.getQueueElements(Infinity);
+						elements = session.queue.getElements(Infinity);
 						break;
 					default:
-						elements = session.getQueueElements(page);
+						elements = session.queue.getElements(page);
 						break;
 				}
+
+				if (!elements[0] || !elements[1]) return;
 
 				page = elements[2];
 				interaction.editReply({ embeds: [ elements[0] ], components: [ elements[1] ] });
 			});
 
 			collector.on('end', () => {
-				const [queueEmbed, queueActionRow] = session.getQueueElements(page, true);
+				const [queueEmbed, queueActionRow] = session.queue.getElements(page, true);
+				if (!queueEmbed || !queueActionRow) return;
+
 				interaction.editReply({ embeds: [ queueEmbed ], components: [ queueActionRow ] });
 			});
 		}
