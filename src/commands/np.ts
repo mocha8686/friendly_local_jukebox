@@ -1,7 +1,5 @@
-import { AudioPlayerStatus, AudioResource } from '@discordjs/voice';
 import { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { Track } from '../music/track';
 import { getSession } from '../store/sessions';
 
 export default {
@@ -20,12 +18,11 @@ export default {
 			return;
 		}
 
-		if (session.audioPlayer.state.status === AudioPlayerStatus.Idle) {
+		const track = session.nowPlaying;
+		if (!track) {
 			interaction.reply({ content: 'I\'m not currently playing a song.', ephemeral: true });
-			return;
+		} else {
+			interaction.reply({ content: `Currently playing ${track.discordString}.`, embeds: [ track.embed ] });
 		}
-
-		const track = (session.audioPlayer.state.resource as AudioResource<Track>).metadata;
-		interaction.reply({ content: `Currently playing ${track.discordString}.`, embeds: [ track.embed ] });
 	}
 };

@@ -25,6 +25,14 @@ export class Session {
 		voiceConnection.subscribe(this.audioPlayer);
 	}
 
+	get nowPlaying(): Track | undefined {
+		if (this.audioPlayer.state.status === AudioPlayerStatus.Idle) {
+			return undefined;
+		} else {
+			return (this.audioPlayer.state.resource as AudioResource<Track>).metadata;
+		}
+	}
+
 	public enqueue(track: Track) {
 		this.queue.push(track);
 		this.processQueue();
