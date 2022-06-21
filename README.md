@@ -9,7 +9,7 @@ Friendly local jukebox. [Invite to a server near you.](https://discord.com/api/o
 	- [x] np (now playing)
 	- [x] stop
 	- [ ] remove
-- [ ] Store channel in subscription to send song notifications to one place
+- [ ] Store channel in session to send song notifications to one place
 - [x] Choose from top *n* when using query
 	- [x] Query pages
 - [x] Embeds
