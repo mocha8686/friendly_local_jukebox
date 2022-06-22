@@ -7,7 +7,7 @@ import { joinPathWithMeta } from './util/joinPathWithMeta';
 
 const token = process.env.DISCORD_BOT_TOKEN ?? '';
 const clientId = process.env.DISCORD_CLIENT_ID ?? '';
-const guildId = process.env.DISCORD_DEV_GUILD_ID ?? '';
+const guildId = process.env.GUILD_ID ?? process.env.DISCORD_DEV_GUILD_ID ?? '';
 
 const commands = (await getCommands(joinPathWithMeta(import.meta.url, './commands'))).map(command => command.command.toJSON());
 
