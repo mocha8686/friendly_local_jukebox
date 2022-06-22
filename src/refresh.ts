@@ -17,11 +17,13 @@ console.log('Starting refresh of application commands.');
 
 try {
 	if (process.env.REFRESH_TYPE === 'GLOBAL') {
+		console.log('Performing global refresh.');
 		await rest.put(
 			Routes.applicationCommands(clientId),
 			{ body: commands },
 		);
 	} else {
+		console.log('Performing guild refresh.');
 		await rest.put(
 			Routes.applicationGuildCommands(clientId, guildId),
 			{ body: commands },
