@@ -31,7 +31,7 @@ export default {
 		}
 
 		const number = interaction.options.getInteger('number');
-		if (number && number >= 1) {
+		if (number && number > 0) {
 			const track = session.queue.getTrackAtIndex(number - 1);
 			session.queue.remove(number - 1);
 			interaction.reply({ content: `Removed ${track.discordString}.` });
