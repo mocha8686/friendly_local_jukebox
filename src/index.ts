@@ -1,10 +1,10 @@
 import 'dotenv/config';
-import { Client, Intents } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { getCommandCollection } from './util/getCommandCollection';
 import { joinPathWithMeta } from './util/joinPathWithMeta';
 
 const token = process.env.DISCORD_BOT_TOKEN ?? '';
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 
 const commands = await getCommandCollection(joinPathWithMeta(import.meta.url, './commands'));
 

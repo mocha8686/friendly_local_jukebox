@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
-import { MessageEmbed, User } from 'discord.js';
+import { EmbedBuilder, User } from 'discord.js';
 import _ from 'lodash';
 import { createBaseEmbed } from '../util/createBaseEmbed';
 import { google } from 'googleapis';
@@ -57,13 +57,13 @@ export class Track implements TrackData {
 		const hours = Math.floor((this.lengthSeconds / 60) / 24);
 		const minutes = Math.floor(this.lengthSeconds / 60) % 60;
 		const seconds = (this.lengthSeconds % 60).toString().padStart(2, '0');
-		
+
 		return (hours > 0) ?
 			`${hours}:${minutes.toString().padStart(2, '0')}:${seconds}` :
 			`${minutes}:${seconds}`;
 	}
 
-	get embed(): MessageEmbed {
+	get embed(): EmbedBuilder {
 		return createBaseEmbed()
 			.setTitle(this.title)
 			.setURL(this.url.toString())
@@ -87,7 +87,7 @@ export class Track implements TrackData {
 
 	public static async fromURL(url: URL, methods: TrackMethods, user: User): Promise<Track> {
 		const info = await ytdl.getBasicInfo(url.toString());
-		const avatarUrlString = user.avatarURL({ dynamic: true, size: 32 });
+		const avatarUrlString = user.avatarURL({ size: 32 });
 
 		return new Track({
 			url,
@@ -113,7 +113,7 @@ export class Track implements TrackData {
 		const service = google.youtube({ version: 'v3', auth: apiKey });
 
 		return new Promise((resolve, reject) => {
-			service.search.list({ 
+			service.search.list({
 				part: [ 'snippet' ],
 				type: [ 'video' ],
 				maxResults: 5,

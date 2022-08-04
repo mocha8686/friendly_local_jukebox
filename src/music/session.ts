@@ -43,7 +43,7 @@ export class Session {
 	}
 
 	private setupVoiceConnection(voiceConnection: VoiceConnection) {
-		voiceConnection.on<'stateChange'>('stateChange', async (_, newState) => {
+		voiceConnection.on('stateChange', async (_, newState) => {
 			if (newState.status === VoiceConnectionStatus.Disconnected) {
 				await this.handleDisconnect(newState);
 			} else if (newState.status === VoiceConnectionStatus.Destroyed) {
@@ -67,7 +67,7 @@ export class Session {
 	}
 
 	private setupAudioPlayer(audioPlayer: AudioPlayer) {
-		audioPlayer.on<'stateChange'>('stateChange', (oldState, newState) => {
+		audioPlayer.on('stateChange', (oldState, newState) => {
 			if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
 				// If transition was !Idle -> Idle, the audio resource finished playing.
 				(oldState.resource as AudioResource<Track>).metadata.onFinish();

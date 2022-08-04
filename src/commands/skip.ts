@@ -1,5 +1,5 @@
 import { AudioPlayerStatus } from '@discordjs/voice';
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { getSession } from '../store/sessions';
 
@@ -17,7 +17,7 @@ export default {
 			.setDescription('Song number to skip to')
 			.setMinValue(1)
 		),
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 		if (!interaction.guildId || !interaction.guild) {
 			interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
 			return;

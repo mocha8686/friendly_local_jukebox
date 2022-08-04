@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember, TextChannel, User } from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember, TextChannel, User } from 'discord.js';
 import { Track, TrackMethods } from '../music/track';
 import { VoiceConnectionStatus, entersState, joinVoiceChannel } from '@discordjs/voice';
 import { getSession, setSession } from '../store/sessions';
@@ -9,7 +9,7 @@ import ytdl from 'ytdl-core';
 
 const MAX_READY_TIMEOUT = 20000;
 
-function getVoiceChannelIdFromInteraction(interaction: CommandInteraction): string | undefined {
+function getVoiceChannelIdFromInteraction(interaction: ChatInputCommandInteraction): string | undefined {
 	const optionId = interaction.options.getChannel('voice_channel')?.id;
 	if (optionId) {
 		return optionId;
@@ -21,7 +21,7 @@ function getVoiceChannelIdFromInteraction(interaction: CommandInteraction): stri
 	}
 }
 
-async function getOrCreateSession(interaction: CommandInteraction): Promise<Session | undefined> {
+async function getOrCreateSession(interaction: ChatInputCommandInteraction): Promise<Session | undefined> {
 	if (!interaction.guildId || !interaction.guild) return undefined;
 
 	let session = getSession(interaction.guildId);
@@ -75,18 +75,18 @@ export default {
 				.setDescription('Voice channel to join.')
 				.addChannelTypes(ChannelType.GuildVoice)
 		),
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 		if (!interaction.guildId || !interaction.guild) {
 			interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
 			return;
 		}
-	
+
 		const query = interaction.options.getString('query');
 		if (!query) {
 			interaction.reply({ content: 'No query specified.', ephemeral: true });
 			return;
 		}
-		
+
 		const session = await getOrCreateSession(interaction);
 		if (!session) {
 			interaction.reply({ content: 'No voice channel was found. Either join one and try again, or specify a channel.', ephemeral: true });

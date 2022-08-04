@@ -1,5 +1,5 @@
 import { AudioPlayerStatus } from '@discordjs/voice';
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { getSession } from '../store/sessions';
 
@@ -13,7 +13,7 @@ export default {
 			.setMinValue(1)
 			.setRequired(true)
 		),
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 		if (!interaction.guildId || !interaction.guild) {
 			interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
 			return;
@@ -30,8 +30,8 @@ export default {
 			return;
 		}
 
-		const number = interaction.options.getInteger('number');
-		if (number && number > 0) {
+		const number = interaction.options.getInteger('number', true);
+		if (number > 0) {
 			const track = session.queue.getTrackAtIndex(number - 1);
 			session.queue.remove(number - 1);
 			interaction.reply({ content: `Removed ${track.discordString}.` });

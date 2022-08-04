@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { AudioPlayerStatus } from '@discordjs/voice';
 import { Session } from './session';
 import { Track } from './track';
@@ -6,33 +6,32 @@ import { createBaseEmbed } from '../util/createBaseEmbed';
 
 const PAGE_SIZE = 10;
 
-function createBaseQueueActionRow(): MessageActionRow {
+function createBaseQueueActionRow(): ActionRowBuilder<ButtonBuilder> {
 	// U+25C0 ◀
 	// U+25B6 ▶
-	return new MessageActionRow().addComponents(
-		new MessageButton()
+	return new ActionRowBuilder<ButtonBuilder>().addComponents(
+		new ButtonBuilder()
 			.setCustomId('first')
 			.setLabel('◀◀')
-			.setStyle('PRIMARY'),
-		new MessageButton()
+			.setStyle(ButtonStyle.Primary),
+		new ButtonBuilder()
 			.setCustomId('previous')
 			.setLabel('◀')
-			.setStyle('PRIMARY'),
-		new MessageButton()
+			.setStyle(ButtonStyle.Primary),
+		new ButtonBuilder()
 			.setCustomId('next')
 			.setLabel('▶')
-			.setStyle('PRIMARY'),
-		new MessageButton()
+			.setStyle(ButtonStyle.Primary),
+		new ButtonBuilder()
 			.setCustomId('last')
 			.setLabel('▶▶')
-			.setStyle('PRIMARY'),
+			.setStyle(ButtonStyle.Primary),
 	);
 }
 
 export class Queue {
 	private queue: Track[] = [];
-	private queueLock = false;	
-	private readyLock = false;
+	private queueLock = false;
 	private readonly session: Session;
 
 	constructor(session: Session) {
@@ -52,7 +51,7 @@ export class Queue {
 		this.queue.splice(start, num ?? 1);
 	}
 
-	public getElements(page: number, disabled = false): [MessageEmbed | undefined, MessageActionRow | undefined, number] {
+	public getElements(page: number, disabled = false): [EmbedBuilder | undefined, ActionRowBuilder<ButtonBuilder> | undefined, number] {
 		if (!this.session.nowPlaying && this.queue.length === 0) {
 			return [undefined, undefined, 0];
 		}
@@ -89,7 +88,7 @@ export class Queue {
 		}
 	}
 
-	private createEmbed(page: number, ): [MessageEmbed, number] {
+	private createEmbed(page: number): [EmbedBuilder, number] {
 		const totalPages = Math.ceil(this.queue.length / PAGE_SIZE);
 		if (page < 0) page = 0;
 		if (page > totalPages - 1) page = totalPages - 1; // If page would have no entries, fall back to last page
@@ -100,17 +99,19 @@ export class Queue {
 
 		const nowPlaying = this.session.nowPlaying;
 		if (nowPlaying) {
-			embed.addField('*Now Playing*', nowPlaying.queueString);
+			embed.addFields(
+				{ name: '*Now Playing*', value: nowPlaying.queueString },
+			);
 		}
-		
+
 		if (entries.length > 0) {
-			embed.addField(
-				`*Page ${page + 1}*`,
-				entries.reduce((str, [i, track]) => {
+			embed.addFields({
+				name: `*Page ${page + 1}*`,
+				value: entries.reduce((str, [i, track]) => {
 					str += `\`${parseInt(i) + 1}\` ${track.queueString}\n`;
 					return str;
 				}, ''),
-			).setFooter({
+			}).setFooter({
 				text: `${page + 1}/${totalPages}`,
 			});
 		}
@@ -118,7 +119,7 @@ export class Queue {
 		return [embed, page];
 	}
 
-	private createActionRow(page: number | 'disabled'): MessageActionRow {
+	private createActionRow(page: number | 'disabled'): ActionRowBuilder<ButtonBuilder> {
 		const actionRow = createBaseQueueActionRow();
 		if (page === 'disabled') {
 			actionRow.components.forEach(component => component.setDisabled(true));
@@ -127,15 +128,13 @@ export class Queue {
 			const totalPages = Math.ceil(this.queue.length / PAGE_SIZE);
 
 			if (page <= 0)	{
-				actionRow.components
-					.filter(component => component.customId === 'first' || component.customId === 'previous')
-					.forEach(component => component.setDisabled(true));
+				actionRow.components[0].setDisabled(true);
+				actionRow.components[1].setDisabled(true);
 			}
 
 			if (page >= totalPages - 1)	{
-				actionRow.components
-					.filter(component => component.customId === 'next' || component.customId === 'last')
-					.forEach(component => component.setDisabled(true));
+				actionRow.components[2].setDisabled(true);
+				actionRow.components[3].setDisabled(true);
 			}
 
 			return actionRow;
